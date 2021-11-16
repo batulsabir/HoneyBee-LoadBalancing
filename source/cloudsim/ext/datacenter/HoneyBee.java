@@ -32,18 +32,18 @@ public class HoneyBee extends VmLoadBalancer implements CloudSimEventListener {
 	public void cloudSimEventFired(CloudSimEvent e) {
 		if (e.getId() == CloudSimEvents.EVENT_CLOUDLET_ALLOCATED_TO_VM){
 			int vmId = (Integer) e.getParameter(Constants.PARAM_VM_ID);
-			int countGunjanCloudlets;
+			int countCloudlets;
 			if(vmAllocationCounts.get(vmId)==null)
-				countGunjanCloudlets = 0;
+				countCloudlets = 0;
 			else
-				countGunjanCloudlets = vmAllocationCounts.get(vmId);
-			vmAllocationCounts.put(vmId,countGunjanCloudlets+1);
+				countCloudlets = vmAllocationCounts.get(vmId);
+			vmAllocationCounts.put(vmId,countCloudlets+1);
 			if(vmAllocationCounts.get(vmId)>cutoff)
 				vmStatesList.put(vmId, VirtualMachineState.BUSY);
 		} else if (e.getId() == CloudSimEvents.EVENT_VM_FINISHED_CLOUDLET){
 			int vmId = (Integer) e.getParameter(Constants.PARAM_VM_ID);
-			int countGunjanCloudlets = vmAllocationCounts.get(vmId);
-			vmAllocationCounts.put(vmId,countGunjanCloudlets-1);
+			int countCloudlets = vmAllocationCounts.get(vmId);
+			vmAllocationCounts.put(vmId,countCloudlets-1);
 			if(vmAllocationCounts.get(vmId)<cutoff)
 				vmStatesList.put(vmId, VirtualMachineState.AVAILABLE);
 		}
@@ -104,7 +104,7 @@ public class HoneyBee extends VmLoadBalancer implements CloudSimEventListener {
 		  }
 	}
 	
-	/* to calculate fitness.. done just to show the steps */
+	/* to calculate fitness*/
 	int calculateFitness(int solValue)
 	{
 		return solValue;	
